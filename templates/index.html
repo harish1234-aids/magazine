@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book-Buddy Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8e8ff 100%);
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-height-screen flex flex-col items-center justify-center p-6 sm:p-12">
+
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-blue-900 tracking-tight uppercase mb-2">
+            BOOK-BUDDY <span class="text-indigo-600">CHALLENGE</span>
+        </h1>
+        <div class="h-1.5 w-20 bg-indigo-500 mx-auto rounded-full mb-6"></div>
+        <p class="text-slate-600 text-lg">Pick a mission to start your adventure! 🚀</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+        
+        <div class="bg-white rounded-[2rem] p-8 card-shadow flex flex-col items-center text-center border-b-8 border-blue-400 hover:transform hover:-translate-y-2 transition-all duration-300">
+            <div class="w-24 h-24 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 text-5xl">
+                🧪
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-4 leading-tight">Science Spy Academy</h2>
+            <a href="{{ url_for('news4') }}" class="mt-auto bg-indigo-600 text-white px-8 py-3 rounded-2xl font-semibold hover:bg-indigo-700 transition uppercase tracking-wide text-sm">
+                Start Mission
+            </a>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 card-shadow flex flex-col items-center text-center border-b-8 border-green-400 hover:transform hover:-translate-y-2 transition-all duration-300">
+            <div class="w-24 h-24 bg-green-50 rounded-3xl flex items-center justify-center mb-6 text-5xl">
+                💬
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-4 leading-tight">The Chaos <br> Chat</h2>
+            <a href="{{ url_for('news4_2') }}" class="mt-auto bg-green-500 text-white px-8 py-3 rounded-2xl font-semibold hover:bg-green-600 transition uppercase tracking-wide text-sm">
+                Enter Chat
+            </a>
+        </div>
+
+        <div class="bg-white rounded-[2rem] p-8 card-shadow flex flex-col items-center text-center border-b-8 border-orange-300 hover:transform hover:-translate-y-2 transition-all duration-300">
+            <div class="w-24 h-24 bg-orange-50 rounded-3xl flex items-center justify-center mb-6 text-5xl">
+                🧠
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-4 leading-tight">Science Quiz Adventure</h2>
+            <a href="{{ url_for('gk') }}" class="mt-auto bg-orange-400 text-white px-8 py-3 rounded-2xl font-semibold hover:bg-orange-500 transition uppercase tracking-wide text-sm">
+                Solve It
+            </a>
+        </div>
+
+    </div>
+
+    <footer class="mt-16 text-slate-400 text-xs tracking-widest uppercase">
+        © 2026 BOOK-BUDDY ADVENTURES
+    </footer>
+
+</body>
+</html>

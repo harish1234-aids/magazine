@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Science Adventure</title>
+    <style>
+        :root {
+            --primary: #ffcc00;
+            --secondary: #4caf50;
+            --bg: #ffefba;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: var(--bg);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0; padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #game-container {
+            background: white; 
+            width: 100%;
+            max-width: 600px;
+            padding: 20px; 
+            border-radius: 25px;
+            box-shadow: 0 8px 0px #e6b800;
+            border: 4px solid var(--primary); 
+            text-align: center;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        #stars { color: #ffa000; font-size: 1.2rem; font-weight: bold; }
+
+        .fact-card {
+            background: #fff9c4;
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px dashed #fbc02d;
+            margin-bottom: 20px;
+            text-align: left;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .fact-title { font-weight: bold; color: #f57f17; font-size: 1.1rem; margin-bottom: 10px; display: block; }
+        .fact-text { font-size: 1.05rem; color: #444; line-height: 1.5; }
+
+        #question-area { display: none; margin-top: 20px; }
+        .question { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: #333; }
+
+        .options-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+        }
+
+        @media (max-width: 480px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+
+        button.option {
+            padding: 12px; border: 2px solid #eee; border-radius: 12px;
+            background: #fafafa; cursor: pointer; font-size: 1rem;
+            font-family: inherit; transition: 0.2s;
+        }
+
+        button.correct { background: #c8e6c9 !important; border-color: #4caf50 !important; font-weight: bold; }
+        button.wrong { background: #ffcdd2 !important; border-color: #f44336 !important; }
+
+        .action-btn {
+            padding: 15px 30px;
+            background: #2196f3;
+            color: white; border: none;
+            border-radius: 50px;
+            font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; font-family: inherit;
+            box-shadow: 0 4px 0 #1976d2;
+            margin-top: 10px;
+        }
+
+        #next-btn { background: var(--secondary); box-shadow: 0 4px 0 #2e7d32; display: none; }
+
+        .maya-sam { 
+            display: flex; justify-content: space-between; 
+            margin-top: 25px; padding-top: 15px; border-top: 2px dashed #eee;
+        }
+
+        .character { background: #f9f9f9; padding: 10px; border-radius: 15px; width: 47%; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <a href="/" style="position: fixed; top: 15px; left: 15px; z-index: 1000; background: #ffcc00; padding: 10px 15px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 0 #e6b800; display: flex; align-items: center; gap: 8px; font-weight: bold; color: #333; font-family: 'Comic Sans MS', cursive;">
+    🏠 <span>Back</span>
+</a>
+    <div class="top-bar">
+        <div id="progress-text">Level 1/3</div>
+        <div id="stars">⭐ <span id="star-count">0</span></div>
+    </div>
+    
+    <div id="fact-card" class="fact-card">
+        <span class="fact-title">📖 Secret Science Fact:</span>
+        <div id="fact-text" class="fact-text"></div>
+    </div>
+
+    <button id="show-question-btn" class="action-btn" onclick="revealQuestion()">I'm Ready for the Question!</button>
+
+    <div id="question-area">
+        <div class="question" id="question-text"></div>
+        <div id="options-grid" class="options-grid"></div>
+    </div>
+
+    <button id="next-btn" class="action-btn" onclick="nextLevel()">NEXT MISSION ➔</button>
+
+    <div class="maya-sam">
+        <div class="character">👩‍🔬 <b>Maya:</b> <br><span id="maya-text"></span></div>
+        <div class="character">🍕 <b>Sam:</b> <br><span id="sam-text"></span></div>
+    </div>
+</div>
+
+<script>
+    const pingSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
+    let currentLevel = 0;
+    let stars = 0;
+
+    const levels = [
+        {
+            topic: "Volcanoes are like big mountains that breathe fire! Most continents have at least one active volcano. But Australia is super special—it's the only continent where all the volcanoes have been asleep for a very, very long time.",
+            q: "Which continent has NO active volcanoes?",
+            options: ["Africa", "Australia", "Europe", "Asia"],
+            correct: 1,
+            maya: "Australia is one of the oldest and quietest places on Earth!",
+            sam: "Quiet is good. I can nap without the ground shaking!"
+        },
+        {
+            topic: "Jupiter is a giant gas planet that loves to spin! It spins so fast that its day is only 10 hours long. On Earth, we have 24 hours to play and sleep, but on Jupiter, you'd have to be very quick!",
+            q: "Which planet spins fast enough to have a 10-hour day?",
+            options: ["Mars", "Jupiter", "Venus", "Saturn"],
+            correct: 1,
+            maya: "Jupiter is the track star of the solar system!",
+            sam: "10 hours? That's barely enough time for two snacks!"
+        },
+        {
+            topic: "The Octopus is like a superhero of the ocean. It has 8 arms, 3 hearts to pump its blood, and its blood is actually blue! This helps it live in the cold, deep water.",
+            q: "Which animal has 3 hearts and blue blood?",
+            options: ["Shark", "Whale", "Octopus", "Dolphin"],
+            correct: 2,
+            maya: "Octopuses use their blue blood to stay strong in deep water.",
+            sam: "I wonder if blue blood tastes like blue raspberry juice..."
+        }
+    ];
+
+    function loadLevel() {
+        const data = levels[currentLevel];
+        document.getElementById('progress-text').innerText = `Level ${currentLevel + 1} of ${levels.length}`;
+        document.getElementById('fact-text').innerText = data.topic;
+        document.getElementById('maya-text').innerText = `"${data.maya}"`;
+        document.getElementById('sam-text').innerText = `"${data.sam}"`;
+        
+        document.getElementById('question-area').style.display = "none";
+        document.getElementById('show-question-btn').style.display = "inline-block";
+        document.getElementById('next-btn').style.display = "none";
+        
+        const grid = document.getElementById('options-grid');
+        grid.innerHTML = "";
+        data.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(index, btn);
+            grid.appendChild(btn);
+        });
+        document.getElementById('question-text').innerText = data.q;
+    }
+
+    function revealQuestion() {
+        document.getElementById('show-question-btn').style.display = "none";
+        document.getElementById('question-area').style.display = "block";
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function checkAnswer(idx, btn) {
+        if (idx === levels[currentLevel].correct) {
+            pingSound.play().catch(()=>{});
+            btn.classList.add('correct');
+            stars += 10;
+            document.getElementById('star-count').innerText = stars;
+            document.querySelectorAll('.option').forEach(b => b.onclick = null);
+            document.getElementById('next-btn').style.display = "inline-block";
+        } else {
+            btn.classList.add('wrong');
+            btn.innerText = "❌ Try Again";
+        }
+    }
+
+    function nextLevel() {
+        currentLevel++;
+        if (currentLevel < levels.length) {
+            loadLevel();
+        } else {
+            document.getElementById('game-container').innerHTML = `
+                <h1 style="font-size: 4rem;">🏆</h1>
+                <h2>QUEST COMPLETE!</h2>
+                <p>Final Stars: <b style="color:#ffa000">${stars}</b></p>
+                <button onclick="location.reload()" class="action-btn">PLAY AGAIN</button>
+            `;
+        }
+    }
+
+    loadLevel();
+</script>
+</body>
+</html>

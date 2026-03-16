@@ -9,16 +9,10 @@
     <style>
         body { font-family: 'Open Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         h1, h2, h3 { font-family: 'Bangers', cursive; letter-spacing: 1px; }
-        
         .hidden { display: none; }
         .fade-in { animation: zoomIn 0.3s ease-out; }
-        
-        @keyframes zoomIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* Wrong Answer Glow & Shake */
         .wrong-glow {
             animation: shake 0.4s ease-in-out;
             border-color: #ef4444 !important;
@@ -36,69 +30,56 @@
         .evidence-photo { 
             border: 8px solid white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            filter: brightness(0) invert(1) blur(10px);
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: opacity 0.3s ease-in-out;
             width: 100%;
             height: auto;
             max-height: 280px;
             object-fit: contain;
         }
         
-        @media (min-width: 1024px) {
-            .evidence-photo { max-height: 450px; }
-        }
-
-        .revealed { filter: brightness(1) invert(0) blur(0); transform: rotate(1.5deg); }
+        @media (min-width: 1024px) { .evidence-photo { max-height: 450px; } }
 
         .spy-btn { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); touch-action: manipulation; }
         .spy-btn:hover { transform: translateY(-3px); }
         .spy-btn:active { transform: scale(0.95); }
-
         .bg-dots { background-image: radial-gradient(#d1d5db 1px, transparent 1px); background-size: 20px 20px; }
-        
         .star-badge { animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body class="bg-yellow-400 bg-dots min-h-screen text-slate-800">
 
     <header class="bg-blue-600 p-4 md:p-6 shadow-xl border-b-4 md:border-b-8 border-blue-800 text-center sticky top-0 z-50">
         <h1 class="text-3xl md:text-6xl text-white drop-shadow-lg uppercase tracking-wider">Science Spy Academy</h1>
-        <p class="text-blue-100 font-bold uppercase text-[10px] md:text-sm tracking-widest">Training Level: Master Detective</p>
+        <p id="level-display" class="text-blue-100 font-bold uppercase text-[10px] md:text-sm tracking-widest">Mission Progress: 0/3</p>
     </header>
 
     <main class="container mx-auto px-4 py-6 md:py-10 max-w-6xl">
         
         <div id="case-menu" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-            <button onclick="openCase('egg')" class="spy-btn bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-blue-500 flex flex-col items-center relative">
-                <div id="star-egg" class="hidden absolute -top-4 -right-4 bg-yellow-300 border-4 border-yellow-500 w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg star-badge">⭐</div>
+            <button onclick="startMission(0)" class="spy-btn bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-blue-500 flex flex-col items-center relative">
+                <div id="star-0" class="hidden absolute -top-4 -right-4 bg-yellow-300 border-4 border-yellow-500 w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg star-badge">⭐</div>
                 <div class="bg-blue-100 w-16 h-16 md:w-24 md:h-24 rounded-full flex items-center justify-center mb-4 text-4xl md:text-5xl">🥚</div>
                 <h2 class="text-2xl md:text-3xl text-blue-600">The Floating Egg</h2>
-                <p class="font-bold text-slate-400 uppercase text-[10px] md:text-xs mt-1">Mission #01</p>
             </button>
 
-            <button onclick="openCase('shadow')" class="spy-btn bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-orange-500 flex flex-col items-center relative">
-                <div id="star-shadow" class="hidden absolute -top-4 -right-4 bg-yellow-300 border-4 border-yellow-500 w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg star-badge">⭐</div>
+            <button onclick="startMission(1)" class="spy-btn bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-orange-500 flex flex-col items-center relative">
+                <div id="star-1" class="hidden absolute -top-4 -right-4 bg-yellow-300 border-4 border-yellow-500 w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg star-badge">⭐</div>
                 <div class="bg-orange-100 w-16 h-16 md:w-24 md:h-24 rounded-full flex items-center justify-center mb-4 text-4xl md:text-5xl">🔦</div>
                 <h2 class="text-2xl md:text-3xl text-orange-600">Shadow Mystery</h2>
-                <p class="font-bold text-slate-400 uppercase text-[10px] md:text-xs mt-1">Mission #02</p>
             </button>
 
-            <button onclick="openCase('sound')" class="spy-btn bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-purple-500 flex flex-col items-center relative">
-                <div id="star-sound" class="hidden absolute -top-4 -right-4 bg-yellow-300 border-4 border-yellow-500 w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg star-badge">⭐</div>
+            <button onclick="startMission(2)" class="spy-btn bg-white p-6 md:p-8 rounded-3xl shadow-xl border-4 border-purple-500 flex flex-col items-center relative">
+                <div id="star-2" class="hidden absolute -top-4 -right-4 bg-yellow-300 border-4 border-yellow-500 w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-lg star-badge">⭐</div>
                 <div class="bg-purple-100 w-16 h-16 md:w-24 md:h-24 rounded-full flex items-center justify-center mb-4 text-4xl md:text-5xl">🚀</div>
                 <h2 class="text-2xl md:text-3xl text-purple-600">Silent Space</h2>
-                <p class="font-bold text-slate-400 uppercase text-[10px] md:text-xs mt-1">Mission #03</p>
             </button>
         </div>
 
         <div id="case-file" class="hidden bg-white rounded-3xl shadow-2xl border-4 md:border-8 border-blue-600 fade-in overflow-hidden max-w-5xl mx-auto">
             <div class="p-4 md:p-8">
-                <button onclick="closeCase()" class="bg-red-500 text-white px-5 py-2 rounded-xl font-bold hover:bg-red-600 transition text-sm mb-6 uppercase shadow-md">
-                    ← Back to Headquarters
+                <button onclick="closeCase()" class="bg-slate-500 text-white px-5 py-2 rounded-xl font-bold hover:bg-slate-600 transition text-sm mb-6 uppercase shadow-md">
+                    ← Quit Mission
                 </button>
                 
                 <div class="flex flex-col lg:flex-row gap-6 md:gap-10">
@@ -109,76 +90,164 @@
                         </div>
                         <div id="options-container" class="grid gap-3 md:gap-4 mb-6"></div>
                         <button id="hint-button" onclick="revealHint()" class="spy-btn w-full py-4 md:py-5 bg-orange-500 text-white text-lg md:text-2xl font-black rounded-2xl shadow-lg border-b-4 md:border-b-8 border-orange-700 uppercase">
-                            🔍 Reveal Scanner Image
+                            🔍 USE SECRET SCANNER
                         </button>
                     </div>
                     <div class="flex-1 order-1 lg:order-2 flex flex-col items-center justify-center bg-slate-800 rounded-3xl p-4 md:p-8 relative min-h-[250px] shadow-inner">
-                        <div class="absolute top-3 left-4 text-white text-[8px] md:text-xs font-mono opacity-50 uppercase tracking-widest text-red-400">Scanner Online</div>
+                        <div id="scanner-label" class="absolute top-3 left-4 text-white text-[8px] md:text-xs font-mono opacity-50 uppercase tracking-widest">Normal View</div>
                         <img id="case-image" src="" class="evidence-photo rounded-lg">
                     </div>
                 </div>
 
-                <div id="solution-box" class="hidden mt-6 p-6 md:p-8 bg-green-400 rounded-2xl border-4 border-green-600 fade-in">
+                <div id="solution-box" class="hidden mt-6 p-6 md:p-8 bg-green-400 rounded-2xl border-4 border-green-600 fade-in text-center">
                     <h3 class="text-3xl md:text-4xl text-white drop-shadow-md mb-2 uppercase">Mission Success! 🎉</h3>
-                    <p id="case-explanation" class="text-base md:text-xl font-bold text-green-900 leading-snug"></p>
+                    <p id="case-explanation" class="text-base md:text-xl font-bold text-green-900 leading-snug mb-6"></p>
+                    <button id="next-mission-btn" onclick="goToNextMission()" class="spy-btn inline-block px-10 py-4 bg-blue-600 text-white text-xl font-black rounded-full shadow-xl border-b-4 border-blue-800 uppercase">
+                        Next Mission ➔
+                    </button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
-        // UPDATED: Added /static/ prefix to image paths
-        const cases = {
-            'egg': { id: 'egg', title: "Magic Water?", hook: "One egg sinks, the other floats! What secret powder is hidden in the floating water?", image: "/static/case1.jpeg", options: ["White Flour", "Salty Salt", "Magic Dust"], correct: "Salty Salt", explanation: "Brilliant! Salt makes water 'denser' (stronger), so it can push the egg up!" },
-            'shadow': { id: 'shadow', title: "Vanishing Shadow", hook: "The suspect's shadow disappeared! Where should we point the light to make a shadow hide?", image: "/static/case2.jpeg", options: ["Right Overhead", "Far Away", "From Behind"], correct: "Right Overhead", explanation: "Spot on! When light is directly above you, your shadow hides right under your shoes!" },
-            'sound': { id: 'sound', title: "Silent Space", hook: "The alarm is ringing, but there's no sound! What did the aliens remove from the room?", image: "/static/case3.jpeg", options: ["The Light", "The Air", "The Music"], correct: "The Air", explanation: "Correct! Sound needs air to travel. No air means no 'road' for the sound!" }
-        };
+        const missionData = [
+            { 
+                id: 0, 
+                title: "Magic Water?", 
+                hook: "Two beakers contain different water. An egg sinks in one and floats in the other. What secret powder makes the egg float?", 
+                image1: "/static/case1_default.jpeg", 
+                image2: "/static/case1.jpeg", 
+                options: ["White Flour", "Salty Salt", "Magic Dust"], 
+                correct: "Salty Salt", 
+                explanation: "Brilliant! Salt makes water 'denser' (stronger), so it can push the egg up!" 
+            },
+            { 
+                id: 1, 
+                title: "Vanishing Shadow", 
+                hook: "The suspect's shadow disappeared! Where should we point the light to make a shadow hide?", 
+                image1: "/static/case2_default.jpeg", 
+                image2: "/static/case2.jpeg", 
+                options: ["Right Overhead", "Far Away", "From Behind"], 
+                correct: "Right Overhead", 
+                explanation: "Spot on! When light is directly above you, your shadow hides right under your shoes!" 
+            },
+            { 
+                id: 2, 
+                title: "Silent Space", 
+                hook: "The alarm is ringing, but there's no sound! What did the aliens remove from the room?", 
+                image1: "/static/case3_default.jpeg", 
+                image2: "/static/case3.jpeg", 
+                options: ["The Light", "The Air", "The Music"], 
+                correct: "The Air", 
+                explanation: "Correct! Sound needs air to travel. No air means no 'road' for the sound!" 
+            }
+        ];
 
-        let currentActiveCase = null;
+        let currentMissionIndex = 0;
+        let completedMissions = new Set();
 
-        function openCase(caseKey) {
-            currentActiveCase = cases[caseKey];
+        function startMission(index) {
+            currentMissionIndex = index;
+            const currentCase = missionData[index];
+            
             document.getElementById('case-menu').classList.add('hidden');
             document.getElementById('case-file').classList.remove('hidden');
             document.getElementById('solution-box').classList.add('hidden');
             document.getElementById('hint-button').classList.remove('hidden');
+            
+            // Set Initial Image
             const img = document.getElementById('case-image');
-            img.src = currentActiveCase.image;
-            img.classList.remove('revealed');
-            document.getElementById('case-title').innerText = currentActiveCase.title;
-            document.getElementById('case-hook').innerText = currentActiveCase.hook;
-            document.getElementById('case-explanation').innerText = currentActiveCase.explanation;
+            img.src = currentCase.image1;
+            
+            // Reset Scanner Label
+            const label = document.getElementById('scanner-label');
+            label.innerText = "Normal View";
+            label.className = "absolute top-3 left-4 text-white text-[8px] md:text-xs font-mono opacity-50 uppercase tracking-widest text-blue-400";
+
+            document.getElementById('case-title').innerText = currentCase.title;
+            document.getElementById('case-hook').innerText = currentCase.hook;
+            document.getElementById('case-explanation').innerText = currentCase.explanation;
+            
             const container = document.getElementById('options-container');
             container.innerHTML = "";
             container.classList.remove('hidden');
-            currentActiveCase.options.forEach(opt => {
+            
+            currentCase.options.forEach(opt => {
                 const btn = document.createElement('button');
                 btn.innerText = opt;
                 btn.className = "spy-btn text-base md:text-xl text-left p-4 md:p-5 bg-white border-2 md:border-4 border-slate-200 rounded-2xl font-bold shadow-sm";
                 btn.onclick = (e) => checkAnswer(opt, e.target);
                 container.appendChild(btn);
             });
+
+            // Update Next button text for last level
+            const nextBtn = document.getElementById('next-mission-btn');
+            if (currentMissionIndex === missionData.length - 1) {
+                nextBtn.innerText = "Finish Academy ➔";
+            } else {
+                nextBtn.innerText = "Next Mission ➔";
+            }
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function revealHint() {
-            document.getElementById('case-image').classList.add('revealed');
+            const currentCase = missionData[currentMissionIndex];
+            const img = document.getElementById('case-image');
+            img.style.opacity = '0';
+            setTimeout(() => {
+                img.src = currentCase.image2;
+                img.style.opacity = '1';
+            }, 150);
+
+            const label = document.getElementById('scanner-label');
+            label.innerText = "Scanner Active: X-RAY MODE";
+            label.className = "absolute top-3 left-4 text-white text-[8px] md:text-xs font-mono opacity-80 uppercase tracking-widest text-red-500 font-bold";
+            
             document.getElementById('hint-button').classList.add('hidden');
         }
 
         function checkAnswer(selected, buttonElement) {
-            if (selected === currentActiveCase.correct) {
+            const currentCase = missionData[currentMissionIndex];
+            if (selected === currentCase.correct) {
                 buttonElement.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
+                
+                // Show completed star in menu
+                completedMissions.add(currentMissionIndex);
+                document.getElementById('star-' + currentMissionIndex).classList.remove('hidden');
+                document.getElementById('level-display').innerText = `Mission Progress: ${completedMissions.size}/${missionData.length}`;
+
+                // Auto-reveal scanner on win
                 revealHint();
+
                 document.getElementById('options-container').classList.add('hidden');
                 document.getElementById('solution-box').classList.remove('hidden');
-                document.getElementById('star-' + currentActiveCase.id).classList.remove('hidden');
-                setTimeout(() => { document.getElementById('solution-box').scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
+                
+                setTimeout(() => { 
+                    document.getElementById('solution-box').scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+                }, 150);
             } else {
                 buttonElement.classList.add('wrong-glow');
                 setTimeout(() => {
                     buttonElement.classList.remove('wrong-glow');
                 }, 400);
+            }
+        }
+
+        function goToNextMission() {
+            if (currentMissionIndex < missionData.length - 1) {
+                startMission(currentMissionIndex + 1);
+            } else {
+                // Game Over / Win State
+                document.getElementById('case-file').innerHTML = `
+                    <div class="p-12 text-center">
+                        <h2 class="text-6xl text-blue-600 mb-4">GRADUATED!</h2>
+                        <p class="text-2xl font-bold mb-8">You are now an Official Science Spy.</p>
+                        <div class="text-8xl mb-8">⭐⭐⭐</div>
+                        <button onclick="location.reload()" class="bg-blue-600 text-white px-8 py-4 rounded-full text-xl font-bold uppercase">Play Again</button>
+                    </div>
+                `;
             }
         }
 
@@ -188,8 +257,9 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
+    
+    <a href="/" style="position: fixed; top: 15px; left: 15px; z-index: 1000; background: white; padding: 10px 15px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; font-weight: bold; color: #333;">
+        🏠 
+    </a>
 </body>
-<a href="/" style="position: fixed; top: 15px; left: 15px; z-index: 1000; background: white; padding: 10px 15px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; font-weight: bold; color: #333;">
-    🏠 
-</a>
 </html>

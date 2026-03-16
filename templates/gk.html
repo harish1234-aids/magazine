@@ -10,6 +10,7 @@
             --secondary: #4caf50;
             --bg: #ffefba;
             --text: #333;
+            --bubble-bg: #ffffff;
         }
 
         body {
@@ -90,20 +91,74 @@
 
         #next-btn { background: var(--secondary); box-shadow: 0 4px 0 #2e7d32; display: none; }
 
+        /* --- SPEECH BUBBLE STYLING --- */
         .maya-sam { 
-            display: flex; justify-content: space-between; 
-            margin-top: 25px; padding-top: 15px; border-top: 2px dashed #eee;
+            display: flex; 
+            justify-content: space-between; 
+            margin-top: 35px; 
+            padding-top: 20px; 
+            border-top: 2px dashed #eee;
         }
 
-        .character { background: #f9f9f9; padding: 10px; border-radius: 15px; width: 47%; font-size: 0.85rem; }
+        .char-container {
+            width: 46%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bubble {
+            background: var(--bubble-bg);
+            border: 3px solid #333;
+            border-radius: 18px;
+            padding: 12px;
+            position: relative;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.05));
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* The tail of the bubble */
+        .bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 12px 10px 0 10px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        /* The inner part of the tail to make it look hollow/white */
+        .bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 8px 0 8px;
+            border-style: solid;
+            border-color: var(--bubble-bg) transparent transparent transparent;
+            z-index: 1;
+        }
+
+        .avatar {
+            margin-top: 15px;
+            font-size: 2rem;
+        }
     </style>
 </head>
 <body>
 
 <div id="game-container">
     <a href="/" style="position: fixed; top: 15px; left: 15px; z-index: 1000; background: #ffcc00; padding: 10px 15px; border-radius: 50px; text-decoration: none; box-shadow: 0 4px 0 #e6b800; display: flex; align-items: center; gap: 8px; font-weight: bold; color: #333; font-family: 'Comic Sans MS', cursive;">
-    <span>Back</span>
-</a>
+        <span>Back</span>
+    </a>
     <div class="top-bar">
         <div id="progress-text">Level 1/3</div>
         <div id="stars">⭐ <span id="star-count">0</span></div>
@@ -124,8 +179,21 @@
     <button id="next-btn" class="action-btn" onclick="nextLevel()">NEXT MISSION ➔</button>
 
     <div class="maya-sam">
-        <div class="character">👩‍🔬 <b>Maya:</b> <br><span id="maya-text"></span></div>
-        <div class="character">🍕 <b>Sam:</b> <br><span id="sam-text"></span></div>
+        <div class="char-container">
+            <div class="bubble">
+                <b>Maya:</b><br>
+                <span id="maya-text"></span>
+            </div>
+            <div class="avatar">👩‍🔬</div>
+        </div>
+
+        <div class="char-container">
+            <div class="bubble">
+                <b>Sam:</b><br>
+                <span id="sam-text"></span>
+            </div>
+            <div class="avatar">👦</div>
+        </div>
     </div>
 </div>
 
@@ -165,8 +233,8 @@
         const data = levels[currentLevel];
         document.getElementById('progress-text').innerText = `Level ${currentLevel + 1} of ${levels.length}`;
         document.getElementById('fact-text').innerText = data.topic;
-        document.getElementById('maya-text').innerText = `"${data.maya}"`;
-        document.getElementById('sam-text').innerText = `"${data.sam}"`;
+        document.getElementById('maya-text').innerText = data.maya;
+        document.getElementById('sam-text').innerText = data.sam;
         
         document.getElementById('question-area').style.display = "none";
         document.getElementById('show-question-btn').style.display = "inline-block";
